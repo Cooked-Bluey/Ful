@@ -5,9 +5,10 @@ import msvcrt
 import time
 import sys
 
+#Level Counter
+MainGameLevel = 1
+
 #Player Class
-
-
 class Player:
     def __init__(self, PlayerHP, PlayerAP, PlayerDmg):
         self.PlayerHP = PlayerHP
@@ -26,12 +27,16 @@ class Player:
     def PlayerStats(self):
         os.system('cls')
         print(a.Menu)
-        print(self.EquippedLeftArm)
+        print(f"You currently have {player.PlayerHP}HP")
+        print(f"You currently have {player.PlayerAP}AP")
+        print(f"You currently deal {player.PlayerDmg}Dmg")
+        print(str(self.EquippedLeftArm))
         StatInput = msvcrt.getch()
         StatInput = chr(ord(StatInput))
         if StatInput == 'i':
             ItemInventory()
         
+            
     #Limb Swapping Function
     def SwapLimbs(self):
         for i in range(len(self.Inventory)):
@@ -64,7 +69,7 @@ class Player:
 
 #Broader Enemy Class
 class Enemy():
-    def __init__(self, Name, HP, AP, DMG, SpawnCount, Level = 1):
+    def __init__(self, Name, HP, AP, DMG, SpawnCount, Level = MainGameLevel):
         self.Name = Name
         self.HP = HP
         self.AP = AP
@@ -77,6 +82,46 @@ class Enemy():
         DroppedLimb.EnemyChange(self.Level)
         return DroppedLimb
     
+    def EnemyCombatTurn(self):
+        if player.PlayerHP < self.AP * self.DMG:
+            player.PlayerHP = 0
+        else:
+            player.PlayerHP -= self.AP * self.DMG
+            print(f"You have {player.PlayerHP}HP and the {self.Name} attacked for {self.AP * self.DMG}")
+            
+    def PlayerCombatTurn(self):
+        ComInput = msvcrt.getch()
+        ComInput = chr(ord(ComInput))
+        if ComInput == "e":
+            Player.PlayerStats()
+        elif ComInput == "i":
+            ItemInventory()
+        elif ComInput == "a":
+            player.PlayerAP -= 1
+            print(player.PlayerAP)
+            if self.HP < player.PlayerDmg:
+                self.HP = 0
+                return self.HP
+            else:
+                self.HP -= player.PlayerDmg
+                print(f"{self.Name} currently has {self.HP}HP and you attacked for {player.PlayerDmg}")
+    
+    def Combat(self):
+        while player.PlayerHP > 0 and self.HP > 0:
+            if player.PlayerAP > 0:
+                self.PlayerCombatTurn()
+            else:
+                self.EnemyCombatTurn()
+                player.PlayerAP = 3
+
+                if player.PlayerHP == 0:
+                    DeathScreen()
+                elif self.HP == 0:
+                    CurrentDroppedLimb = self.OnDeath()
+                    print(str(CurrentDroppedLimb.Name))
+                    print(MainGameLevel)
+                    time.sleep(3)
+    
     def Debug(self):
         print("HP: " + str(self.HP) + " AP: " + str(self.AP) + " DMG: " + str(self.DMG) + " Level: " + str(self.Level))
         lmb = self.OnDeath()        
@@ -85,7 +130,7 @@ class Enemy():
 #Enemy Type
 class Imp(Enemy):
     def __init__(self, Level):
-        DMGBoost = Level * 2 #Tweak
+        DMGBoost = MainGameLevel * 2 #Tweak
         RandomHPChange = random.randint(-3, 3) #Tweak
         super(Imp, self).__init__("Imp", 15 + RandomHPChange, 1, 3 + DMGBoost, 1, Level)
 
@@ -122,9 +167,6 @@ class Limb():
         self.HPBoost += random.randint(-1, 3)
 
         self.APBoost += random.randint(0, 1)
-
-#Level Counter
-MainGameLevel = 1
 
 #The Possible interactions
 Interactables = ["Imp", "Fast", "Strong", "Stealth", "Chest", "Lore"]
@@ -166,10 +208,10 @@ AllLimbs = {
 HPItemsList = []
 APItemList = []
 
-player = Player(100, 50, 10)
+player = Player(50, 3, 10)
 
 #Time.sleep Constant
-timer = 2
+timer = 5
 
 
 def CheckAround(Map):
@@ -397,40 +439,46 @@ def SpawnEnemies(Maze, EnemyDict):
 #The interactions based on the number interacted with on the screen
 def Interaction(NextTile):
     #Enemy instigators 
+    #Imp
     if NextTile == 3:
         os.system('cls')
-        print("""
-    Imp
-                """)
         print(a.ImpFullyBody)
-        
+        print(a.AttackMenu)
+        Imp(MainGameLevel).Combat()
         time.sleep(timer)
+
+    #Fast
     elif NextTile == 4:
         os.system('cls')
-        print("""
-Fast
-            """)
         print(a.FastFullBody)
+        print(a.AttackMenu)
+        Fast(MainGameLevel).Combat()
         time.sleep(timer)
+    
+    #Strong
     elif NextTile == 5:
         os.system('cls')
-        print("""
-Strong
-            """)
         print(a.StrongFullBody)
+        print(a.AttackMenu)
+        Strong(MainGameLevel).Combat()
+
         time.sleep(timer)
+    
+    #Stealth
     elif NextTile == 6:
         os.system('cls')
-        print("""
-Stealth
-            """)
         print(a.StealthFullBody)
+        print(a.AttackMenu)
+        Stealth(MainGameLevel).Combat()
         time.sleep(timer)
+    
     #Interaction instigators
     elif NextTile == 7:
         os.system('cls')
         print("""
-Chest found""")
+Chest found
+Inside there was some:
+""")
         APorHP = random.randint(0,1)
         if APorHP == 0:
             HPItem = random.randint(1, 6)
@@ -699,16 +747,21 @@ def ItemInventory():
                 
             InvInput = msvcrt.getch()
 
-
+def DeathScreen():
+    scrollTxt("""You have perished aboard the happy meat farms genetic research facility.
+Associated cleaning cost will be deducted from your families compensation.
+We hope you enjoyed your stay.""")
+    quit()
+    
 #def Help():
     
 if __name__ == "__main__":    
     #Enemy Dictionary   
     EnemyDict = {
-        "Imp": Imp(MainGameLevel),
-        "Strong": Strong(MainGameLevel),
-        "Fast": Fast(MainGameLevel),
-        "Stealth":Stealth(MainGameLevel)
+        "Imp": Imp(2),
+        "Strong": Strong(2),
+        "Fast": Fast(2),
+        "Stealth":Stealth(2)
     }
     
     while True:

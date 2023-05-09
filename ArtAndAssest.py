@@ -272,5 +272,5 @@ Menu = """
 
 AttackMenu = """
 ________________________________
-| Atk (a) | Inv (i) | Stat (s) |
+| Atk (a) | Inv (i) | Stat (e) |
 """
