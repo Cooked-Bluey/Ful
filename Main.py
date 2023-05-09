@@ -6,22 +6,32 @@ import time
 import sys
 
 #Player Class
+
+
 class Player:
-    def __init__(self, PlayerHP, PlayerAP, PlayerDmg, EquippedLeftArm, EquippedRightArm, EquippedTorso, EquippedLeftLeg, EquippedRightLeg ):
+    def __init__(self, PlayerHP, PlayerAP, PlayerDmg):
         self.PlayerHP = PlayerHP
         self.PlayerAP = PlayerAP
         self.PlayerDmg = PlayerDmg
         
         playerLimbs = AllLimbs["Player"].copy()
-        self.EquippedLeftArm = EquippedLeftArm
-        self.EquippedRightArm = EquippedRightArm
-        self.EquippedTorso = EquippedTorso
-        self.EquippedLeftLeg = EquippedLeftLeg
-        self.EquippedRightLeg = EquippedRightLeg
-        
-        EquippedLeftArm = playerLimbs[0]
+        self.EquippedLeftArm = playerLimbs[0]
+        self.EquippedRightArm = playerLimbs[1]
+        self.EquippedTorso = playerLimbs[2]
+        self.EquippedLeftLeg = playerLimbs[3]
+        self.EquippedRightLeg = playerLimbs[4]
         
         self.Inventory = []
+    #Player Stats Page
+    def PlayerStats(self):
+        os.system('cls')
+        print(a.Menu)
+        print(self.EquippedLeftArm)
+        StatInput = msvcrt.getch()
+        StatInput = chr(ord(StatInput))
+        if StatInput == 'i':
+            ItemInventory()
+        
     #Limb Swapping Function
     def SwapLimbs(self):
         for i in range(len(self.Inventory)):
@@ -72,7 +82,6 @@ class Enemy():
         lmb = self.OnDeath()        
         print("Limb- HP: " + str(lmb.HPBoost) + " DMG: " + str(lmb.DMGBoost) + " AP: " + str(lmb.APBoost) + " Name: " + lmb.Name + "\n")
 
-
 #Enemy Type
 class Imp(Enemy):
     def __init__(self, Level):
@@ -120,6 +129,7 @@ MainGameLevel = 1
 #The Possible interactions
 Interactables = ["Imp", "Fast", "Strong", "Stealth", "Chest", "Lore"]
 
+
 #Scrolling text function
 def scrollTxt(text):
     for char in text:
@@ -153,8 +163,10 @@ AllLimbs = {
 }
 
 #Players Item Inventories
-HPItemsList = [1, 1]
+HPItemsList = []
 APItemList = []
+
+player = Player(100, 50, 10)
 
 #Time.sleep Constant
 timer = 2
@@ -280,11 +292,8 @@ def PrintMaze(Maze):
                 RowString += str(Maze[Row][Column]) + " "
         print(RowString)
         
-    print("""
-===============================================
-|| Inv (i) || Map (m) || Sat (e) || Help (h) ||
-===============================================""")
-                
+    print(a.Menu)
+
 #Check if the player has reached the end of the maze
 def CheckPlayerFinish(Maze):
     FinalRow = Maze[-1]
@@ -293,7 +302,7 @@ def CheckPlayerFinish(Maze):
         return True
     else:
         return False
-    
+
 #Player Movement and other interaction commands
 def ChangePlayerPosition(Maze):
     Direction = msvcrt.getch()
@@ -340,7 +349,7 @@ def ChangePlayerPosition(Maze):
         ItemInventory()
     
     elif Direction == "e":
-        PlayerStats()
+        player.PlayerStats()
 
     elif Direction == "h":
         print("Working on it")
@@ -356,10 +365,6 @@ def GetFreeSpace(Maze):
 
 #Enemy Spawns Based on the conditions of the maze
 def SpawnEnemies(Maze, EnemyDict):
-    
-    
-    
-    
     Chest = True
     Lore = True
     FreeSpaces = GetFreeSpace(Maze)
@@ -388,8 +393,7 @@ def SpawnEnemies(Maze, EnemyDict):
                         Chest = False
                     else:
                         FreeSpaces -= EnemyDict[Interactable].SpawnCount
-                        
-                        
+
 #The interactions based on the number interacted with on the screen
 def Interaction(NextTile):
     #Enemy instigators 
@@ -399,6 +403,7 @@ def Interaction(NextTile):
     Imp
                 """)
         print(a.ImpFullyBody)
+        
         time.sleep(timer)
     elif NextTile == 4:
         os.system('cls')
@@ -518,10 +523,7 @@ def ItemInventory():
     os.system('cls')
     PlayerMaxHP = 50
     PlayerMaxAP = 3
-    print("""
-===============================================
-|| Inv (i) || Map (m) || Sat (e) || Help (h) ||
-===============================================""")
+    print(a.Menu)
     print("Health Items")
     print(f"1. You have {HPItemsList.count(1)} band aids")
     print(f"2. You have {HPItemsList.count(2)} bandages")
@@ -604,6 +606,8 @@ def ItemInventory():
             else:
                 Player.PlayerAP += 3
                 print("Item used")
+    elif InvInput == "e":
+        player.PlayerStats()
     InvInput = msvcrt.getch()
     while chr(ord(InvInput)) != "m":
         os.system('cls')
@@ -611,10 +615,7 @@ def ItemInventory():
             quit()
         else:
             InvInput = chr(ord(InvInput))
-            print("""
-===============================================
-|| Inv (i) || Map (m) || Sat (e) || Help (h) ||
-===============================================""")
+            print(a.Menu)
             print("Health Items")
             print(f"1. You have {HPItemsList.count(1)} band aids")
             print(f"2. You have {HPItemsList.count(2)} bandages")
@@ -693,28 +694,15 @@ def ItemInventory():
                     else:
                         Player.PlayerAP += 3
                         print("Item used")
+            elif InvInput == "e":
+                player.PlayerStats()
+                
             InvInput = msvcrt.getch()
 
-#Player Stats Page
-def PlayerStats():
-    os.system('cls')
-    print("""
-===============================================
-|| Inv (i) || Map (m) || Sat (e) || Help (h) ||
-===============================================""")
-    print(Player.EquippedLeftArm)
-    StatInput = msvcrt.getch()
-    StatInput = chr(ord(StatInput))
+
 #def Help():
     
-if __name__ == "__main__":
-    #p = Player(20, 3, 3)
-    #l = l.AllLimbs["Imp"]
-    
-    Player.PlayerHP = 40
-    Player.PlayerAP = 3
-    Player.PlayerDmg = 5
-    
+if __name__ == "__main__":    
     #Enemy Dictionary   
     EnemyDict = {
         "Imp": Imp(MainGameLevel),
