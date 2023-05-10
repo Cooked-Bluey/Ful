@@ -9,6 +9,8 @@ import sys
 MainGameLevel = 1
 
 #Player Class
+PlayerMaxHP = 50
+PlayerMaxAP = 3
 class Player:
     def __init__(self, PlayerHP, PlayerAP, PlayerDmg):
         self.PlayerHP = PlayerHP
@@ -25,12 +27,17 @@ class Player:
         self.Inventory = []
     #Player Stats Page
     def PlayerStats(self):
+        if self.PlayerAP < 0:
+            self.PlayerAP = 0
         os.system('cls')
         print(a.Menu)
         print(f"You currently have {player.PlayerHP}HP")
         print(f"You currently have {player.PlayerAP}AP")
         print(f"You currently deal {player.PlayerDmg}Dmg")
-        print(str(self.EquippedLeftArm))
+        print(f"{str(self.EquippedLeftArm.Name)} {str(self.EquippedRightArm.Name)}")
+        #print(f"{a.leftarm + self.EquippedLeftArm.Name} {a.rightarm + self.EquippedRightArm.Name}")
+        print(f"        {str(self.EquippedTorso.Name)}")
+        print(f"{str(self.EquippedLeftLeg.Name)} {str(self.EquippedRightLeg.Name)}")
         StatInput = msvcrt.getch()
         StatInput = chr(ord(StatInput))
         if StatInput == 'i':
@@ -93,18 +100,18 @@ class Enemy():
         ComInput = msvcrt.getch()
         ComInput = chr(ord(ComInput))
         if ComInput == "e":
-            Player.PlayerStats()
+            player.PlayerStats()
         elif ComInput == "i":
             ItemInventory()
         elif ComInput == "a":
             player.PlayerAP -= 1
-            print(player.PlayerAP)
             if self.HP < player.PlayerDmg:
                 self.HP = 0
+                print(f"You have killed the {self.Name}")
                 return self.HP
             else:
                 self.HP -= player.PlayerDmg
-                print(f"{self.Name} currently has {self.HP}HP and you attacked for {player.PlayerDmg}")
+                print(f"{self.Name} has {self.HP}HP left and you attacked for {player.PlayerDmg} and have {player.PlayerAP}AP")
     
     def Combat(self):
         while player.PlayerHP > 0 and self.HP > 0:
@@ -113,14 +120,18 @@ class Enemy():
             else:
                 self.EnemyCombatTurn()
                 player.PlayerAP = 3
-
-                if player.PlayerHP == 0:
-                    DeathScreen()
-                elif self.HP == 0:
-                    CurrentDroppedLimb = self.OnDeath()
-                    print(str(CurrentDroppedLimb.Name))
-                    print(MainGameLevel)
-                    time.sleep(3)
+        if player.PlayerHP <= 0:
+            DeathScreen()
+        elif self.HP <= 0:
+            CurrentDroppedLimb = self.OnDeath()
+            print(str(CurrentDroppedLimb.Name))
+            PickUpNewLimb = input("Would you like to exchange this limb? (y/n)")
+            PickUpNewLimb = PickUpNewLimb.lower()
+            if PickUpNewLimb == 'y':
+                player.Inventory.append(CurrentDroppedLimb)
+                print(player.Inventory)
+            else:
+                print(MainGameLevel)
     
     def Debug(self):
         print("HP: " + str(self.HP) + " AP: " + str(self.AP) + " DMG: " + str(self.DMG) + " Level: " + str(self.Level))
@@ -142,11 +153,15 @@ class Strong(Enemy):
 
 class Stealth(Enemy):
     def __init__(self, Level):
-        super(Stealth, self).__init__("Stealth", 35, 3, 5, 4, Level)
+        DMGBoost = Level * 2 #Tweak
+        RandomHPChange = random.randint(-3, 3) #Tweak
+        super(Stealth, self).__init__("Stealth", 35 + RandomHPChange, 3, DMGBoost + 5, 4, Level)
 
 class Fast(Enemy):
     def __init__(self, Level):
-        super(Fast, self).__init__("Fast", 25, 5, 4, 3, Level)
+        DMGBoost = Level * 2 #Tweak
+        RandomHPChange = random.randint(-3, 3) #Tweak
+        super(Fast, self).__init__("Fast", 25 + RandomHPChange, 5, DMGBoost + 4, 3, Level)
 
 #Limb class
 class Limb():
@@ -569,8 +584,6 @@ Log 17 - ID Power Grid Engineer, Miss Lamarr:
 #Players Item Inventory
 def ItemInventory():
     os.system('cls')
-    PlayerMaxHP = 50
-    PlayerMaxAP = 3
     print(a.Menu)
     print("Health Items")
     print(f"1. You have {HPItemsList.count(1)} band aids")

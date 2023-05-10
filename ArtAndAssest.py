@@ -1,28 +1,28 @@
 #Player
-PlayerLeftArm = """
+LeftArmPlayer = """
  ||
 /  \ 
 |||'
 """
-PlayerRightArm = """
+RightArmPlayer = """
  ||
  ||
 /  \ 
 `|||
 """
-PlayerTorso = """
+TorsoPlayer = """
 / _ _ \ 
 \  |  /
  \ | / 
   \_/
 """
-PlayerLeftLeg = """
+LeftLegPlayer = """
    ||
    ||
    ||
 (###/
 """
-PlayerRightLeg = """
+RightLegPlayer = """
 ||
 ||
 ||
@@ -47,31 +47,31 @@ ImpFullyBody = """
 ⠀⠀⠀⠀⠀⠈⢿⣤⣀⣉⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 """
-ImpLeftArm = """
+LeftArmImp = """
  |
  |
 //\ 
 
 """
 
-ImpRightArm = """
+RightArmImp = """
  |
  |
 /\\ 
 """
 
-ImpTorso = """
+TorsoImp = """
   _______
   \ _|_ /
    \ | /
     \|/
 """
 
-ImpLeftLeg = """
+LeftLegImp = """
  |
 _|
 """
-ImpRightLeg = """
+RightLegImp = """
 |
 |_
 """
@@ -95,7 +95,7 @@ StrongFullBody = """
             \   \__, \_     `~'     _/ .__/   /            
              `-._,-'   `-._______,-'   `-._,-'"""
 
-StrongLeftArm = """
+LeftArmStrong = """
  |    |
  |    |
  |_  _|
@@ -104,7 +104,7 @@ StrongLeftArm = """
 \/ \/ \/
 """
 
-StrongRightArm = """
+RightArmStrong = """
  |    |
  |    |
  |_  _|
@@ -112,21 +112,21 @@ StrongRightArm = """
 || || ||
 \/ \/ \/
 """
-StrongTorso = """
+TorsoStrong = """
 	  /-----------\ 
       \ .       . /
        \   _|_   /
 	    \  _|_  /
 	     -------
 """
-StrongLeftLeg = """
+LeftLegStrong = """
  [ || ]
  [ || ]
  [ || ]
  [ || ]
 () () ()
 """
-StrongRightLeg = """
+RightLegStrong = """
  [ || ]
  [ || ]
  [ || ]
@@ -156,7 +156,7 @@ StealthFullBody = """
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⡀⠀⠀⠀⠀⠀⠀⠀⠀⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⡇⠀⠀⠀⠀⠀⠀⠀⠀⠈⠇⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"""
-StealthLeftArm = """
+LeftArmStealth = """
  ||  
 /  \ 
 |  |
@@ -166,7 +166,7 @@ StealthLeftArm = """
   \|
 """
 
-StealthRightArm = """
+RightArmStealth = """
  ||
 /  \ 
 |  |
@@ -175,14 +175,14 @@ StealthRightArm = """
 |'/
 |/
 """
-StealthTorso = """
+TorsoStealth = """
 _______
 \     /
 (     )
 | _0_ |
 |/   \|
 """
-StealthLeftLeg = """
+LeftLegStealth = """
 |  |
  \ | 
   \ \ 
@@ -223,7 +223,7 @@ FastFullBody = """
 ⠀⠀⠀⠀⠀⠀⠀⠚⠻⠓⠉⠁⠀⠀⠀⠀⠀⠘⠵⢿⣷⣄⡀⠀⠀⠀
 """
 
-FastLeftArm = """
+LeftArmFast = """
   8
   8
   8	 
@@ -231,14 +231,14 @@ FastLeftArm = """
 / | \ 
 """
 
-FastRightArm = """
+RightArmFast = """
   8
   8
   8	 
  /|\  
 / | \ 
 """
-FastTorso = """
+TorsoFast = """
 
 /===\ 
 |. .|
@@ -247,7 +247,7 @@ FastTorso = """
 \___/
 """
 
-FastLeftLeg = """
+LeftLegFast = """
   []
   []
   []
@@ -255,7 +255,7 @@ FastLeftLeg = """
 ===]
 """
 
-FastRightLeg = """
+RightLegFast = """
 []
 []
 []
