@@ -25,6 +25,12 @@ class Player:
         self.EquippedRightLeg = playerLimbs[4]
         
         self.Inventory = []
+        PlayerDmg = 10
+        PlayerDmg = PlayerDmg + self.EquippedLeftArm.DMGBoost + self.EquippedRightArm.DMGBoost + self.EquippedTorso.DMGBoost + self.EquippedLeftLeg.DMGBoost + self.EquippedRightLeg.DMGBoost
+        PlayerMaxAP = 3
+        PlayerMaxAP = PlayerMaxAP + self.EquippedLeftArm.APBoost + self.EquippedRightArm.APBoost + self.EquippedTorso.APBoost + self.EquippedLeftLeg.APBoost + self.EquippedRightLeg.APBoost
+        PlayerMaxHP = 50
+        PlayerMaxHP = PlayerMaxHP + self.EquippedLeftArm.HPBoost + self.EquippedRightArm.HPBoost + self.EquippedTorso.HPBoost + self.EquippedLeftLeg.HPBoost + self.EquippedRightLeg.HPBoost
     #Player Stats Page
     def PlayerStats(self):
         if self.PlayerAP < 0:
@@ -35,21 +41,37 @@ class Player:
         print(f"You currently have {player.PlayerAP}AP")
         print(f"You currently deal {player.PlayerDmg}Dmg")
         print(f"{str(self.EquippedLeftArm.Name)} {str(self.EquippedRightArm.Name)}")
-        #print(f"{a.leftarm + self.EquippedLeftArm.Name} {a.rightarm + self.EquippedRightArm.Name}")
         print(f"        {str(self.EquippedTorso.Name)}")
         print(f"{str(self.EquippedLeftLeg.Name)} {str(self.EquippedRightLeg.Name)}")
-        StatInput = msvcrt.getch()
-        StatInput = chr(ord(StatInput))
+        if self.PlayerAP > 0:
+            print("Would you like to exchange any limbs from your storage? (y/n) ")
+            StatInput = msvcrt.getch()
+            StatInput = chr(ord(StatInput))
+            if StatInput == 'y':
+                print("You hate that you need to do this.")
+                self.SwapLimbs()
+                StatInputAgain = input("Would you like to swap anything else? (y/n) ")
+                while StatInputAgain == "y":
+                    self.SwapLimbs()
+                    StatInputAgain = input("Would you like to swap anything else? (y/n) ")
+        else: 
+            scrollTxt("You do not have enough AP to swap out any limbs,")
+            scrollTxt("you would die from exhaustion")
+            
         if StatInput == 'i':
             ItemInventory()
+    
         
             
     #Limb Swapping Function
     def SwapLimbs(self):
         for i in range(len(self.Inventory)):
             print(str(i+1) + ": " + self.Inventory[i].Name)
+            print(f"{int(self.Inventory[i].DMGBoost)}DMG, {int(self.Inventory[i].HPBoost)}HP, {int(self.Inventory[i].APBoost)}AP.")
         
         LimbNumber = int(input("Swap Item Number: ")) - 1
+        
+        self.PlayerAP -= 1
         
         NewLimb = self.Inventory[LimbNumber]
         Limb = NewLimb.BodyPart
@@ -73,6 +95,12 @@ class Player:
             self.Inventory.append(self.EquippedRightLeg)
             self.EquippedRightLeg = NewLimb
             self.Inventory.remove(self.EquippedRightLeg)
+        player.PlayerDmg = 10
+        player.PlayerDmg = player.PlayerDmg + self.EquippedLeftArm.DMGBoost + self.EquippedRightArm.DMGBoost + self.EquippedTorso.DMGBoost + self.EquippedLeftLeg.DMGBoost + self.EquippedRightLeg.DMGBoost
+        PlayerMaxAP = 3
+        PlayerMaxAP = PlayerMaxAP + self.EquippedLeftArm.APBoost + self.EquippedRightArm.APBoost + self.EquippedTorso.APBoost + self.EquippedLeftLeg.APBoost + self.EquippedRightLeg.APBoost
+        PlayerMaxHP = 50
+        PlayerMaxHP = PlayerMaxHP + self.EquippedLeftArm.HPBoost + self.EquippedRightArm.HPBoost + self.EquippedTorso.HPBoost + self.EquippedLeftLeg.HPBoost + self.EquippedRightLeg.HPBoost
 
 #Broader Enemy Class
 class Enemy():
@@ -125,14 +153,18 @@ class Enemy():
         elif self.HP <= 0:
             CurrentDroppedLimb = self.OnDeath()
             print(str(CurrentDroppedLimb.Name))
-            PickUpNewLimb = input("Would you like to exchange this limb? (y/n)")
-            PickUpNewLimb = PickUpNewLimb.lower()
-            if PickUpNewLimb == 'y':
+            print("Would you like to store this limb? (y/n)")
+            ComInput = msvcrt.getch()
+            ComInput = chr(ord(ComInput))
+            if ComInput == 'y':
                 player.Inventory.append(CurrentDroppedLimb)
-                print(player.Inventory)
+                scrollTxt(f"You press the mass into the bag on you back and it makes contact with the rest of the meat.")
+                x = False
+            elif ComInput == 'n':
+                scrollTxt("You have discarded the rotting tissue.")
+                x = False
             else:
-                print(MainGameLevel)
-    
+                print("Enter a valid input")
     def Debug(self):
         print("HP: " + str(self.HP) + " AP: " + str(self.AP) + " DMG: " + str(self.DMG) + " Level: " + str(self.Level))
         lmb = self.OnDeath()        
@@ -356,6 +388,7 @@ def CheckPlayerFinish(Maze):
     FinalRow = Maze[-1]
     if 2 in FinalRow:
         MainGameLevel += 1
+        player.PlayerAP = PlayerMaxAP
         return True
     else:
         return False
@@ -492,8 +525,8 @@ def Interaction(NextTile):
         os.system('cls')
         print("""
 Chest found
-Inside there was some:
-""")
+======================
+Inside there was some:""")
         APorHP = random.randint(0,1)
         if APorHP == 0:
             HPItem = random.randint(1, 6)
@@ -521,20 +554,20 @@ Inside there was some:
         time.sleep(timer)
     elif NextTile == 8:
         os.system('cls')
-        LourSelect = random.randint(1, 11)
-        if LourSelect == 1:
+        LoreSelect = random.randint(1, 11)
+        if LoreSelect == 1:
             scrollTxt("""
 The air here is so heavy, it stinks of iron and death.
 i can't place my finger on it but the walls here feel like they're listening
 hopefully we can find some fuel to get out of here
 it feels like walking through an old grave yard.""")
-        elif LourSelect == 2:
+        elif LoreSelect == 2:
             scrollTxt("""
 A warning to any who find this
 leave in any capacity that you can
 this place will subject you to things worse than death
 i've forgot what humanity even means cause of this place""")
-        elif LourSelect == 3:
+        elif LoreSelect == 3:
             scrollTxt("""
 I don't believe it 
 this can't be real
@@ -543,19 +576,19 @@ but something was very wrong with them
 there was no soul
 only purpose 
 who could stomach creating such an abomination""")
-        elif LourSelect == 4:
+        elif LoreSelect == 4:
             scrollTxt("""
 wyecTHEwieucbfWALLShfkbvAREiseybALIVEsrvse
 sryvbTHEYsiruvbSEEysrvYOUsrv""")
-        elif LourSelect == 5:
+        elif LoreSelect == 5:
             scrollTxt("Don't trust the overseer")
-        elif LourSelect == 6:
+        elif LoreSelect == 6:
             scrollTxt("This isn't your skin")
-        elif LourSelect == 7:
+        elif LoreSelect == 7:
             scrollTxt("Thief")
-        elif LourSelect == 8:
+        elif LoreSelect == 8:
             scrollTxt("Your existence proves Nietzsche right")
-        elif LourSelect == 9:
+        elif LoreSelect == 9:
             scrollTxt("""
 Log 01 - ID Captain, Mr Xavier:
     we have reached stable orbit, solar panels are fully deployed and all glucose replicators are operational 
@@ -563,7 +596,7 @@ Log 01 - ID Captain, Mr Xavier:
     I've flown hundred of mining facilities out to their dig sites, and even more researchers to the next "universe defining outpost"
     but this feels different, the suits said it should be no different but I don't like it.
     The researchers seem closer to cult members than anything.""")
-        elif LourSelect == 10:
+        elif LoreSelect == 10:
             scrollTxt("""
 Log 37 - ID Medical Officer, Dr Martin:
     It's been a month onboard the Fulcrum and it seems that no one knows what is really happening,
@@ -572,7 +605,7 @@ Log 37 - ID Medical Officer, Dr Martin:
     another thing is that they keep getting me to look at tissue sample, 
     i understand that lab grown meat is a possibility but that doesn't explain the adrenal glands
     i found within the supposedly lab grown pieces.""")
-        elif LourSelect == 11:
+        elif LoreSelect == 11:
             scrollTxt("""
 Log 17 - ID Power Grid Engineer, Miss Lamarr:
     It makes 0 sense, why would we need so much power, this is a researchers facility for useless rocks,
@@ -602,71 +635,75 @@ def ItemInventory():
             print("You don't have any of this item.")
         else:
             HPItemsList.remove(1)
-            if Player.PlayerHP + 3 >= PlayerMaxHP:
-                Player.PlayerHP = PlayerMaxHP
+            if player.PlayerHP + 3 >= PlayerMaxHP:
+                player.PlayerHP = PlayerMaxHP
                 print("Item used")
             else:
-                Player.PlayerHP += 3
+                player.PlayerHP += 3
                 print("Item used")
+            player.PlayerAP -= 1
 
     elif InvInput == "2":
         if HPItemsList.count(2) <= 0:
             print("You don't have any of this item.")
         else:
             HPItemsList.remove(2)
-            if Player.PlayerHP + 7 >= PlayerMaxHP:
-                Player.PlayerHP = PlayerMaxHP
+            if player.PlayerHP + 7 >= PlayerMaxHP:
+                player.PlayerHP = PlayerMaxHP
                 print("Item used")
             else:
-                Player.PlayerHP += 7
+                player.PlayerHP += 7
                 print("Item used")
+            player.PlayerAP -= 1
+
     elif InvInput == "3":
         if HPItemsList.count(3) <= 0:
             print("You don't have any of this item.")
         else:
             HPItemsList.remove(3)
-            if Player.PlayerHP + 15 >= PlayerMaxHP:
-                Player.PlayerHP = PlayerMaxHP
+            if player.PlayerHP + 15 >= PlayerMaxHP:
+                player.PlayerHP = PlayerMaxHP
                 print("Item used")
             else:
                 Player.PlayerHP += 15
                 print("Item used")
-            
+            player.PlayerAP -= 1
     elif InvInput == "4":
         if APItemList.count(1) <= 0:
             print("You don't have any of this item.")
         else:
             APItemList.remove(1)
-            if Player.PlayerAP + 1 >= PlayerMaxAP:
-                Player.PlayerAP = PlayerMaxAP
+            if player.PlayerAP + 1 >= PlayerMaxAP:
+                player.PlayerAP = PlayerMaxAP
                 print("Item used")
             else:
-                Player.PlayerAP += 1
+                player.PlayerAP += 1
                 print("Item used")
-                
+            player.PlayerAP -= 1
     elif InvInput == "5":
         if APItemList.count(2) <= 0:
             print("You don't have any of this item.")
         else:
             APItemList.remove(2)
-            if Player.PlayerAP + 2 >= PlayerMaxAP:
-                Player.PlayerAP = PlayerMaxAP
+            if player.PlayerAP + 2 >= PlayerMaxAP:
+                player.PlayerAP = PlayerMaxAP
                 print("Item used")
             else:
-                Player.PlayerAP += 2
+                player.PlayerAP += 2
                 print("Item used")
-            
+            player.PlayerAP -= 1
     elif InvInput == "6":
         if APItemList.count(3) <= 0:
             print("You don't have any of this item.")
         else:
             APItemList.remove(3)
-            if Player.PlayerAP + 3 >= PlayerMaxAP:
-                Player.PlayerAP = PlayerMaxAP
+            if player.PlayerAP + 3 >= PlayerMaxAP:
+                player.PlayerAP = PlayerMaxAP
                 print("Item used")
             else:
-                Player.PlayerAP += 3
+                player.PlayerAP += 3
                 print("Item used")
+            player.PlayerAP -= 1
     elif InvInput == "e":
         player.PlayerStats()
     InvInput = msvcrt.getch()
@@ -693,68 +730,73 @@ def ItemInventory():
                     print("You don't have any of this item.")
                 else:
                     HPItemsList.remove(1)
-                    if Player.PlayerHP + 3 >= PlayerMaxHP:
-                        Player.PlayerHP = PlayerMaxHP
+                    if player.PlayerHP + 3 >= PlayerMaxHP:
+                        player.PlayerHP = PlayerMaxHP
                         print("Item used")
                     else:
-                        Player.PlayerHP += 3
+                        player.PlayerHP += 3
                         print("Item used")
+                    player.PlayerAP -= 1
             elif InvInput == "2":
                 if HPItemsList.count(2) <= 0:
                     print("You don't have any of this item.")
                 else:
                     HPItemsList.remove(2)
-                    if Player.PlayerHP + 7 >= PlayerMaxHP:
-                        Player.PlayerHP = PlayerMaxHP
+                    if player.PlayerHP + 7 >= PlayerMaxHP:
+                        player.PlayerHP = PlayerMaxHP
                         print("Item used")
                     else:
-                        Player.PlayerHP += 7
+                        player.PlayerHP += 7
                         print("Item used")
+                    player.PlayerAP -= 1
             elif InvInput == "3":
                 if HPItemsList.count(3) <= 0:
                     print("You don't have any of this item.")
                 else:
                     HPItemsList.remove(3)
-                    if Player.PlayerHP + 15 >= PlayerMaxHP:
-                        Player.PlayerHP = PlayerMaxHP
+                    if player.PlayerHP + 15 >= PlayerMaxHP:
+                        player.PlayerHP = PlayerMaxHP
                         print("Item used")
                     else:
-                        Player.PlayerHP += 15
+                        player.PlayerHP += 15
                         print("Item used")
-                    
+                    player.PlayerAP -= 1
             elif InvInput == "4":
                 if APItemList.count(1) <= 0:
                     print("You don't have any of this item.")
                 else:
                     APItemList.remove(1)
-                    if Player.PlayerAP + 1 >= PlayerMaxAP:
-                        Player.PlayerAP = PlayerMaxAP
+                    if player.PlayerAP + 1 >= PlayerMaxAP:
+                        player.PlayerAP = PlayerMaxAP
                         print("Item used")
                     else:
-                        Player.PlayerAP += 1
+                        player.PlayerAP += 1
                         print("Item used")
+                    player.PlayerAP -= 1
             elif InvInput == "5":
                 if APItemList.count(2) <= 0:
                     print("You don't have any of this item.")
                 else:
                     APItemList.remove(2)
-                    if Player.PlayerAP + 2 >= PlayerMaxAP:
-                        Player.PlayerAP = PlayerMaxAP
+                    if player.PlayerAP + 2 >= PlayerMaxAP:
+                        player.PlayerAP = PlayerMaxAP
                         print("Item used")
                     else:
-                        Player.PlayerAP += 2
+                        player.PlayerAP += 2
                         print("Item used")
+                    player.PlayerAP -= 1
             elif InvInput == "6":
                 if APItemList.count(3) <= 0:
                     print("You don't have any of this item.")
                 else:
                     APItemList.remove(3)
-                    if Player.PlayerAP + 3 >= PlayerMaxAP:
-                        Player.PlayerAP = PlayerMaxAP
+                    if player.PlayerAP + 3 >= PlayerMaxAP:
+                        player.PlayerAP = PlayerMaxAP
                         print("Item used")
                     else:
-                        Player.PlayerAP += 3
+                        player.PlayerAP += 3
                         print("Item used")
+                    player.PlayerAP -= 1
             elif InvInput == "e":
                 player.PlayerStats()
                 
