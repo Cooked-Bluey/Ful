@@ -789,6 +789,7 @@ def Help():
     while TutorialSection != 'm':
         TutorialSection = msvcrt.getch()
         TutorialSection = chr(ord(TutorialSection))
+        
         if TutorialSection == '1':
             os.system('cls')
             scrollTxt("""The Maze.\n
@@ -833,7 +834,30 @@ The second use is that it is the place where limbs are swapped out, it being the
             TutorialSection = chr(ord(TutorialSection))
             if TutorialSection == "y":
                 Help()
-    
+
+
+
+def EndOfGame():
+    scrollTxt("""You arrive at the bridge, the very top of the ship. \n
+You look out onto the deck of your metal casket, \n
+You attempt to open the main computer but the system is broken. \n
+All that is displayed is the date, December 27th, \n
+4001. \n
+You are stuck, not knowing what to believe, then the failing computer shuts off. \n
+Your reflection stairs at you, \n
+You are a monster of this ship now too. \n
+We hope you enjoy your Stay.
+""")
+    quit()
+def Intro():
+    os.system('cls')
+    scrollTxt("You wake up into a haze, air heavy and putrid. \nDecay seemingly the only constant about the room you wake up in all you know is that it is December 27th, year 3156 and that you need to survive. \nBut what ever is echoing the those screams along the failing hull of the ship isn't going to make it easy.\n")
+    print(a.title)
+    scrollTxt("============================================ Happy Meat Farm's 13th Genetic Marvel ============================================")
+    time.sleep(3)
+if MainGameLevel == 20:
+    EndOfGame()
+
 if __name__ == "__main__":    
     #Enemy Dictionary   
     EnemyDict = {
@@ -843,6 +867,7 @@ if __name__ == "__main__":
         "Stealth":Stealth(2)
     }
     
+    Intro()
     while True:
         Mz = GenerateMaze(15)
         SpawnEnemies(Mz, EnemyDict)
