@@ -61,31 +61,32 @@ class Player:
         print(f"+{int(self.EquippedLeftLeg.DMGBoost)}Dmg, +{int(self.EquippedLeftLeg.APBoost)}AP, +{int(self.EquippedLeftLeg.HPBoost)}HP.  +{int(self.EquippedRightLeg.DMGBoost)}Dmg, +{int(self.EquippedRightLeg.APBoost)}AP, +{int(self.EquippedRightLeg.HPBoost)}HP.")
         StatInput = '#'
         while StatInput != BackToInteraction:
-            if self.PlayerAP < 0:
-                self.PlayerAP = 0
             if self.Inventory == []:
                 print("You haven't picked up any limbs")
             else:
-                if self.PlayerAP > 0:
-                    print("Would you like to exchange any limbs from your storage? (y/n) ")
-                    StatInput = msvcrt.getch()
-                    StatInput = chr(ord(StatInput))
-                    if StatInput == 'y':
-                        print("You hate that you need to do this.")
-                        self.SwapLimbs()
-                        StatInputAgain = input("Would you like to swap anything else? (y/n) ")
-                        while StatInputAgain == "y":
+                if self.PlayerAP < 0:
+                    self.PlayerAP = 0
+
+                    if self.PlayerAP > 0:
+                        print("Would you like to exchange any limbs from your storage? (y/n) ")
+                        StatInput = msvcrt.getch()
+                        StatInput = chr(ord(StatInput))
+                        if StatInput == 'y':
+                            print("You hate that you need to do this.")
                             self.SwapLimbs()
                             StatInputAgain = input("Would you like to swap anything else? (y/n) ")
-                    elif StatInput == 'n':
-                        scrollTxt("Your bag closes the limbs inside writhe in protest.")
-                else: 
-                    scrollTxt("You do not have enough AP to swap out any limbs, ")
-                    scrollTxt("you would die from exhaustion")
-            scrollTxt("Select a new menu.")
-            StatInput = msvcrt.getch()
-            StatInput = chr(ord(StatInput))
-            os.system('cls')
+                            while StatInputAgain == "y":
+                                self.SwapLimbs()
+                                StatInputAgain = input("Would you like to swap anything else? (y/n) ")
+                        elif StatInput == 'n':
+                            scrollTxt("Your bag closes the limbs inside writhe in protest.")
+                    else: 
+                        scrollTxt("You do not have enough AP to swap out any limbs, \n")
+                        scrollTxt("you would die from exhaustion \n")
+                scrollTxt("Select a new menu.")
+                StatInput = msvcrt.getch()
+                StatInput = chr(ord(StatInput))
+                os.system('cls')
             if StatInput == 'i':
                 ItemInventory()
             elif StatInput == "h":
@@ -851,7 +852,11 @@ We hope you enjoy your Stay.
     quit()
 def Intro():
     os.system('cls')
-    scrollTxt("You wake up into a haze, air heavy and putrid. \nDecay seemingly the only constant about the room you wake up in all you know is that it is December 27th, year 3156 and that you need to survive. \nBut what ever is echoing the those screams along the failing hull of the ship isn't going to make it easy.\n")
+    scrollTxt("For the best experience play with the terminal fully open and zoomed in so you can read the text clearly")
+    time.sleep(1)
+    os.system('cls')
+    scrollTxt("You wake up into a haze, air heavy and putrid. \nDecay seemingly the only constant about the room you wake up in all you know is that it is December 27th, year 3156 and that you need to survive. \nBut what ever is echoing those screams along the failing hull of the ship isn't going to make it easy.\n")
+    time.sleep(0.05)
     print(a.title)
     scrollTxt("============================================ Happy Meat Farm's 13th Genetic Marvel ============================================")
     time.sleep(3)
