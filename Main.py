@@ -33,36 +33,64 @@ class Player:
         PlayerMaxHP = PlayerMaxHP + self.EquippedLeftArm.HPBoost + self.EquippedRightArm.HPBoost + self.EquippedTorso.HPBoost + self.EquippedLeftLeg.HPBoost + self.EquippedRightLeg.HPBoost
     #Player Stats Page
     def PlayerStats(self):
-        if self.PlayerAP < 0:
-            self.PlayerAP = 0
+        global BackToInteraction
         os.system('cls')
-        print(a.Menu)
+        if InCombat == True:
+            print(a.AttackMenu)
+            BackToInteraction = 'a'
+            self.PlayerStatsRepeats()
+            print(CurrentEnemyImage)
+            print(a.AttackMenu)
+        elif InCombat == False:
+            print(a.Menu)
+            BackToInteraction = 'm'
+            self.PlayerStatsRepeats()
+
+        
+    def PlayerStatsRepeats(self):
         print(f"You currently have {player.PlayerHP}HP")
         print(f"You currently have {player.PlayerAP}AP")
         print(f"You currently deal {player.PlayerDmg}Dmg")
-        print(f"{str(self.EquippedLeftArm.Name)} {str(self.EquippedRightArm.Name)}")
-        print(f"        {str(self.EquippedTorso.Name)}")
-        print(f"{str(self.EquippedLeftLeg.Name)} {str(self.EquippedRightLeg.Name)}")
-        if self.PlayerAP > 0:
-            print("Would you like to exchange any limbs from your storage? (y/n) ")
+        print(f"{str(self.EquippedLeftArm.Name)}:       {str(self.EquippedRightArm.Name)}:")
+        print(f"+{int(self.EquippedLeftArm.DMGBoost)}Dmg, +{int(self.EquippedLeftArm.APBoost)}AP, +{int(self.EquippedRightArm.HPBoost)}HP.  +{int(self.EquippedRightArm.DMGBoost)}Dmg, +{int(self.EquippedRightArm.APBoost)}AP, +{int(self.EquippedRightArm.HPBoost)}HP.")
+        print("")
+        print(f"            {str(self.EquippedTorso.Name)}")
+        print(f"            +{int(self.EquippedTorso.DMGBoost)}Dmg, +{int(self.EquippedTorso.APBoost)}AP, +{int(self.EquippedTorso.HPBoost)}HP.")
+        print("")
+        print(f"{str(self.EquippedLeftLeg.Name)}:       {str(self.EquippedRightLeg.Name)}:")
+        print(f"+{int(self.EquippedLeftLeg.DMGBoost)}Dmg, +{int(self.EquippedLeftLeg.APBoost)}AP, +{int(self.EquippedLeftLeg.HPBoost)}HP.  +{int(self.EquippedRightLeg.DMGBoost)}Dmg, +{int(self.EquippedRightLeg.APBoost)}AP, +{int(self.EquippedRightLeg.HPBoost)}HP.")
+        StatInput = '#'
+        while StatInput != BackToInteraction:
+            if self.PlayerAP < 0:
+                self.PlayerAP = 0
+            if self.Inventory == []:
+                print("You haven't picked up any limbs")
+            else:
+                if self.PlayerAP > 0:
+                    print("Would you like to exchange any limbs from your storage? (y/n) ")
+                    StatInput = msvcrt.getch()
+                    StatInput = chr(ord(StatInput))
+                    if StatInput == 'y':
+                        print("You hate that you need to do this.")
+                        self.SwapLimbs()
+                        StatInputAgain = input("Would you like to swap anything else? (y/n) ")
+                        while StatInputAgain == "y":
+                            self.SwapLimbs()
+                            StatInputAgain = input("Would you like to swap anything else? (y/n) ")
+                    elif StatInput == 'n':
+                        scrollTxt("Your bag closes the limbs inside writhe in protest.")
+                else: 
+                    scrollTxt("You do not have enough AP to swap out any limbs, ")
+                    scrollTxt("you would die from exhaustion")
+            scrollTxt("Select a new menu.")
             StatInput = msvcrt.getch()
             StatInput = chr(ord(StatInput))
-            if StatInput == 'y':
-                print("You hate that you need to do this.")
-                self.SwapLimbs()
-                StatInputAgain = input("Would you like to swap anything else? (y/n) ")
-                while StatInputAgain == "y":
-                    self.SwapLimbs()
-                    StatInputAgain = input("Would you like to swap anything else? (y/n) ")
-        else: 
-            scrollTxt("You do not have enough AP to swap out any limbs,")
-            scrollTxt("you would die from exhaustion")
-            
-        if StatInput == 'i':
-            ItemInventory()
-    
-        
-            
+            os.system('cls')
+            if StatInput == 'i':
+                ItemInventory()
+            elif StatInput == "h":
+                Help()
+
     #Limb Swapping Function
     def SwapLimbs(self):
         for i in range(len(self.Inventory)):
@@ -103,6 +131,7 @@ class Player:
         PlayerMaxHP = PlayerMaxHP + self.EquippedLeftArm.HPBoost + self.EquippedRightArm.HPBoost + self.EquippedTorso.HPBoost + self.EquippedLeftLeg.HPBoost + self.EquippedRightLeg.HPBoost
 
 #Broader Enemy Class
+InCombat = False
 class Enemy():
     def __init__(self, Name, HP, AP, DMG, SpawnCount, Level = MainGameLevel):
         self.Name = Name
@@ -142,6 +171,8 @@ class Enemy():
                 print(f"{self.Name} has {self.HP}HP left and you attacked for {player.PlayerDmg} and have {player.PlayerAP}AP")
     
     def Combat(self):
+        global InCombat
+        InCombat = True
         while player.PlayerHP > 0 and self.HP > 0:
             if player.PlayerAP > 0:
                 self.PlayerCombatTurn()
@@ -149,22 +180,26 @@ class Enemy():
                 self.EnemyCombatTurn()
                 player.PlayerAP = 3
         if player.PlayerHP <= 0:
+            self.InCombat = False
             DeathScreen()
         elif self.HP <= 0:
+            self.InCombat = False
             CurrentDroppedLimb = self.OnDeath()
             print(str(CurrentDroppedLimb.Name))
             print("Would you like to store this limb? (y/n)")
             ComInput = msvcrt.getch()
             ComInput = chr(ord(ComInput))
+            while ComInput != 'y' and ComInput != 'n':
+                print("Enter a valid input")
+                ComInput = msvcrt.getch()
+                ComInput = chr(ord(ComInput))
             if ComInput == 'y':
                 player.Inventory.append(CurrentDroppedLimb)
                 scrollTxt(f"You press the mass into the bag on you back and it makes contact with the rest of the meat.")
-                x = False
             elif ComInput == 'n':
                 scrollTxt("You have discarded the rotting tissue.")
-                x = False
-            else:
-                print("Enter a valid input")
+        return self.InCombat
+    
     def Debug(self):
         print("HP: " + str(self.HP) + " AP: " + str(self.AP) + " DMG: " + str(self.DMG) + " Level: " + str(self.Level))
         lmb = self.OnDeath()        
@@ -372,7 +407,7 @@ def PrintMaze(Maze):
         RowString = ""
         for Column in range (len(Maze)):
             if Maze[Row][Column] == 1:
-                RowString += "# "
+                RowString += "██"
             elif Maze[Row][Column] == 2:
                 RowString += "P " 
             elif Maze[Row][Column] == 0:
@@ -382,6 +417,7 @@ def PrintMaze(Maze):
         print(RowString)
         
     print(a.Menu)
+    print("Use WASD to move around the map.")
 
 #Check if the player has reached the end of the maze
 def CheckPlayerFinish(Maze):
@@ -442,8 +478,7 @@ def ChangePlayerPosition(Maze):
         player.PlayerStats()
 
     elif Direction == "h":
-        print("Working on it")
-
+        Help()
 #Total Number of 0's in the array
 def GetFreeSpace(Maze):
     FreeSpaces = 0
@@ -486,13 +521,15 @@ def SpawnEnemies(Maze, EnemyDict):
 
 #The interactions based on the number interacted with on the screen
 def Interaction(NextTile):
+    global CurrentEnemyImage
     #Enemy instigators 
     #Imp
     if NextTile == 3:
         os.system('cls')
         print(a.ImpFullyBody)
         print(a.AttackMenu)
-        Imp(MainGameLevel).Combat()
+        CurrentEnemyImage = a.ImpFullyBody
+        Imp(MainGameLevel).Combat()                                                        
         time.sleep(timer)
 
     #Fast
@@ -500,6 +537,7 @@ def Interaction(NextTile):
         os.system('cls')
         print(a.FastFullBody)
         print(a.AttackMenu)
+        CurrentEnemyImage = a.FastFullBody
         Fast(MainGameLevel).Combat()
         time.sleep(timer)
     
@@ -508,6 +546,7 @@ def Interaction(NextTile):
         os.system('cls')
         print(a.StrongFullBody)
         print(a.AttackMenu)
+        CurrentEnemyImage = a.StrongFullBody
         Strong(MainGameLevel).Combat()
 
         time.sleep(timer)
@@ -517,6 +556,7 @@ def Interaction(NextTile):
         os.system('cls')
         print(a.StealthFullBody)
         print(a.AttackMenu)
+        CurrentEnemyImage = a.StealthFullBody
         Stealth(MainGameLevel).Combat()
         time.sleep(timer)
     
@@ -616,8 +656,23 @@ Log 17 - ID Power Grid Engineer, Miss Lamarr:
 
 #Players Item Inventory
 def ItemInventory():
+    global InCombat
     os.system('cls')
-    print(a.Menu)
+    global BackToInteraction
+    if InCombat == True:
+        print(a.AttackMenu)
+        BackToInteraction = 'a'
+        ItemInvRepeatCode()
+        os.system('cls')
+        print(CurrentEnemyImage)
+        print(a.AttackMenu)
+    elif InCombat == False:
+        print(a.Menu)
+        BackToInteraction = 'm'
+        ItemInvRepeatCode()
+        os.system('cls')
+
+def ItemInvRepeatCode():
     print("Health Items")
     print(f"1. You have {HPItemsList.count(1)} band aids")
     print(f"2. You have {HPItemsList.count(2)} bandages")
@@ -628,187 +683,156 @@ def ItemInventory():
     print(f"5. You have {APItemList.count(2)} caffeine tablets.")
     print(f"6. You have {APItemList.count(3)} liquid amphetamines.")   
     print("What item do you want to use. ")
-    InvInput = msvcrt.getch()
-    InvInput = chr(ord(InvInput))
-    if InvInput == "1":
-        if HPItemsList.count(1) <= 0:
-            print("You don't have any of this item.")
-        else:
-            HPItemsList.remove(1)
-            if player.PlayerHP + 3 >= PlayerMaxHP:
-                player.PlayerHP = PlayerMaxHP
-                print("Item used")
-            else:
-                player.PlayerHP += 3
-                print("Item used")
-            player.PlayerAP -= 1
-
-    elif InvInput == "2":
-        if HPItemsList.count(2) <= 0:
-            print("You don't have any of this item.")
-        else:
-            HPItemsList.remove(2)
-            if player.PlayerHP + 7 >= PlayerMaxHP:
-                player.PlayerHP = PlayerMaxHP
-                print("Item used")
-            else:
-                player.PlayerHP += 7
-                print("Item used")
-            player.PlayerAP -= 1
-
-    elif InvInput == "3":
-        if HPItemsList.count(3) <= 0:
-            print("You don't have any of this item.")
-        else:
-            HPItemsList.remove(3)
-            if player.PlayerHP + 15 >= PlayerMaxHP:
-                player.PlayerHP = PlayerMaxHP
-                print("Item used")
-            else:
-                Player.PlayerHP += 15
-                print("Item used")
-            player.PlayerAP -= 1
-    elif InvInput == "4":
-        if APItemList.count(1) <= 0:
-            print("You don't have any of this item.")
-        else:
-            APItemList.remove(1)
-            if player.PlayerAP + 1 >= PlayerMaxAP:
-                player.PlayerAP = PlayerMaxAP
-                print("Item used")
-            else:
-                player.PlayerAP += 1
-                print("Item used")
-            player.PlayerAP -= 1
-    elif InvInput == "5":
-        if APItemList.count(2) <= 0:
-            print("You don't have any of this item.")
-        else:
-            APItemList.remove(2)
-            if player.PlayerAP + 2 >= PlayerMaxAP:
-                player.PlayerAP = PlayerMaxAP
-                print("Item used")
-            else:
-                player.PlayerAP += 2
-                print("Item used")
-            player.PlayerAP -= 1
-    elif InvInput == "6":
-        if APItemList.count(3) <= 0:
-            print("You don't have any of this item.")
-        else:
-            APItemList.remove(3)
-            if player.PlayerAP + 3 >= PlayerMaxAP:
-                player.PlayerAP = PlayerMaxAP
-                print("Item used")
-            else:
-                player.PlayerAP += 3
-                print("Item used")
-            player.PlayerAP -= 1
-    elif InvInput == "e":
-        player.PlayerStats()
-    InvInput = msvcrt.getch()
-    while chr(ord(InvInput)) != "m":
-        os.system('cls')
+    InvInput = '#'
+    while InvInput != BackToInteraction:
+        InvInput = msvcrt.getch()
+        InvInput = chr(ord(InvInput))
         if InvInput == b'\x03':
             quit()
-        else:
-            InvInput = chr(ord(InvInput))
-            print(a.Menu)
-            print("Health Items")
-            print(f"1. You have {HPItemsList.count(1)} band aids")
-            print(f"2. You have {HPItemsList.count(2)} bandages")
-            print(f"3. You have {HPItemsList.count(3)} tourniquets")
-            
-            print("Action Point Items")
-            print(f"4. You have {APItemList.count(1)} electrolytes.")
-            print(f"5. You have {APItemList.count(2)} caffeine tablets.")
-            print(f"6. You have {APItemList.count(3)} liquid amphetamines.")   
+        if InvInput == "1":
+            if HPItemsList.count(1) <= 0:
+                print("You don't have any of this item.")
+            else:
+                HPItemsList.remove(1)
+                if player.PlayerHP + 3 >= PlayerMaxHP:
+                    player.PlayerHP = PlayerMaxHP
+                    print("Item used")
+                else:
+                    player.PlayerHP += 3
+                    print("Item used")
+                player.PlayerAP -= 1
 
-            print("What item do you want to use. ")
-            if InvInput == "1":
-                if HPItemsList.count(1) <= 0:
-                    print("You don't have any of this item.")
+        elif InvInput == "2":
+            if HPItemsList.count(2) <= 0:
+                print("You don't have any of this item.")
+            else:
+                HPItemsList.remove(2)
+                if player.PlayerHP + 7 >= PlayerMaxHP:
+                    player.PlayerHP = PlayerMaxHP
+                    print("Item used")
                 else:
-                    HPItemsList.remove(1)
-                    if player.PlayerHP + 3 >= PlayerMaxHP:
-                        player.PlayerHP = PlayerMaxHP
-                        print("Item used")
-                    else:
-                        player.PlayerHP += 3
-                        print("Item used")
-                    player.PlayerAP -= 1
-            elif InvInput == "2":
-                if HPItemsList.count(2) <= 0:
-                    print("You don't have any of this item.")
-                else:
-                    HPItemsList.remove(2)
-                    if player.PlayerHP + 7 >= PlayerMaxHP:
-                        player.PlayerHP = PlayerMaxHP
-                        print("Item used")
-                    else:
-                        player.PlayerHP += 7
-                        print("Item used")
-                    player.PlayerAP -= 1
-            elif InvInput == "3":
-                if HPItemsList.count(3) <= 0:
-                    print("You don't have any of this item.")
-                else:
-                    HPItemsList.remove(3)
-                    if player.PlayerHP + 15 >= PlayerMaxHP:
-                        player.PlayerHP = PlayerMaxHP
-                        print("Item used")
-                    else:
-                        player.PlayerHP += 15
-                        print("Item used")
-                    player.PlayerAP -= 1
-            elif InvInput == "4":
-                if APItemList.count(1) <= 0:
-                    print("You don't have any of this item.")
-                else:
-                    APItemList.remove(1)
-                    if player.PlayerAP + 1 >= PlayerMaxAP:
-                        player.PlayerAP = PlayerMaxAP
-                        print("Item used")
-                    else:
-                        player.PlayerAP += 1
-                        print("Item used")
-                    player.PlayerAP -= 1
-            elif InvInput == "5":
-                if APItemList.count(2) <= 0:
-                    print("You don't have any of this item.")
-                else:
-                    APItemList.remove(2)
-                    if player.PlayerAP + 2 >= PlayerMaxAP:
-                        player.PlayerAP = PlayerMaxAP
-                        print("Item used")
-                    else:
-                        player.PlayerAP += 2
-                        print("Item used")
-                    player.PlayerAP -= 1
-            elif InvInput == "6":
-                if APItemList.count(3) <= 0:
-                    print("You don't have any of this item.")
-                else:
-                    APItemList.remove(3)
-                    if player.PlayerAP + 3 >= PlayerMaxAP:
-                        player.PlayerAP = PlayerMaxAP
-                        print("Item used")
-                    else:
-                        player.PlayerAP += 3
-                        print("Item used")
-                    player.PlayerAP -= 1
-            elif InvInput == "e":
-                player.PlayerStats()
-                
-            InvInput = msvcrt.getch()
+                    player.PlayerHP += 7
+                    print("Item used")
+                player.PlayerAP -= 1
 
+        elif InvInput == "3":
+            if HPItemsList.count(3) <= 0:
+                print("You don't have any of this item.")
+            else:
+                HPItemsList.remove(3)
+                if player.PlayerHP + 15 >= PlayerMaxHP:
+                    player.PlayerHP = PlayerMaxHP
+                    print("Item used")
+                else:
+                    Player.PlayerHP += 15
+                    print("Item used")
+                player.PlayerAP -= 1
+        elif InvInput == "4":
+            if APItemList.count(1) <= 0:
+                print("You don't have any of this item.")
+            else:
+                APItemList.remove(1)
+                if player.PlayerAP + 1 >= PlayerMaxAP:
+                    player.PlayerAP = PlayerMaxAP
+                    print("Item used")
+                else:
+                    player.PlayerAP += 1
+                    print("Item used")
+                player.PlayerAP -= 1
+        elif InvInput == "5":
+            if APItemList.count(2) <= 0:
+                print("You don't have any of this item.")
+            else:
+                APItemList.remove(2)
+                if player.PlayerAP + 2 >= PlayerMaxAP:
+                    player.PlayerAP = PlayerMaxAP
+                    print("Item used")
+                else:
+                    player.PlayerAP += 2
+                    print("Item used")
+                player.PlayerAP -= 1
+        elif InvInput == "6":
+            if APItemList.count(3) <= 0:
+                print("You don't have any of this item.")
+            else:
+                APItemList.remove(3)
+                if player.PlayerAP + 3 >= PlayerMaxAP:
+                    player.PlayerAP = PlayerMaxAP
+                    print("Item used")
+                else:
+                    player.PlayerAP += 3
+                    print("Item used")
+                player.PlayerAP -= 1
+        elif InvInput == "e":
+            player.PlayerStats()
+        elif InvInput == "h":
+            Help()
+    
 def DeathScreen():
     scrollTxt("""You have perished aboard the happy meat farms genetic research facility.
 Associated cleaning cost will be deducted from your families compensation.
 We hope you enjoyed your stay.""")
     quit()
     
-#def Help():
+def Help():
+    os.system('cls')
+    scrollTxt("This is the help/tutorial page where different aspects of the game you are playing can be learnt about. \nYou can exit this menu at any point by pressing 'm' and can return to this page at any time. \nSo what would you like to know? \n")
+    print("========================================")
+    print("1. The maze, its features and functions.")
+    time.sleep(0.05)
+    print("2. The inventory and how to use it.")
+    time.sleep(0.05)
+    print("3. The status page what it tells you and how it's used.")
+    print("Where you you like to go?")
+    TutorialSection = msvcrt.getch()
+    TutorialSection = chr(ord(TutorialSection))
+    while TutorialSection != 'm':
+        TutorialSection = msvcrt.getch()
+        TutorialSection = chr(ord(TutorialSection))
+        if TutorialSection == '1':
+            os.system('cls')
+            scrollTxt("""The Maze.\n
+The maze is the main page of the game where progression is made and interactions are instigated. \n
+As a result it can be confusing as there are many numbers on the screen that may not make sense. \n
+To combat this here is a key for each item that will be found in the maze.\n""")
+            print("""
+- Player = P
+- Imp = 3
+- Fast = 4
+- Strong = 5
+- Stealth = 6
+- Chest = 7
+- Lore = 8
+- Exit = 9""")
+            print("Return to help menu? (y/n)")
+            TutorialSection = msvcrt.getch()
+            TutorialSection = chr(ord(TutorialSection))
+            if TutorialSection == "y":
+                Help()
+            
+            
+        elif TutorialSection == '2':
+            scrollTxt("""The Inventory is where all the items you have collected from chest will be stored. \n
+These items are either HP (health point) or AP (action point) related items that have a one off use of rasing your current HP/AP \n
+Items are used by inputting the corresponding number and the game should tell you if the item has been used.\n""")
+            
+            print("Return to help menu? (y/n)")
+            TutorialSection = msvcrt.getch()
+            TutorialSection = chr(ord(TutorialSection))
+            if TutorialSection == "y":
+                Help()
+                
+                
+        elif TutorialSection == '3':
+            scrollTxt("""The status page has 2 primary uses \n
+The first is that it tells you your current HP, AP adn Dmg \n
+The second use is that it is the place where limbs are swapped out, it being the the way of increasing power within the game. \n""")
+            
+            print("Return to help menu? (y/n)")
+            TutorialSection = msvcrt.getch()
+            TutorialSection = chr(ord(TutorialSection))
+            if TutorialSection == "y":
+                Help()
     
 if __name__ == "__main__":    
     #Enemy Dictionary   

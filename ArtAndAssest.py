@@ -190,7 +190,7 @@ LeftLegStealth = """
     \ \ 
      \/
 """
-StealthRightLeg = """
+RightLegStealth = """
    |  |
    | /
   / / 
@@ -265,12 +265,40 @@ RightLegFast = """
 
 #Miscellaneous
 Menu = """
-===============================================
-|| Inv (i) || Map (m) || Sat (e) || Help (h) ||
-===============================================
-"""
+================================================
+|| Inv (i) || Map (m) || Stat (e) || Help (h) ||
+================================================"""
 
 AttackMenu = """
 ________________________________
 | Atk (a) | Inv (i) | Stat (e) |
 """
+allArt = {"LeftArmPlayer": LeftArmPlayer,
+        "RightArmPlayer": RightArmPlayer,
+        "TorsoPlayer": TorsoPlayer,
+        "LeftLegPlayer": LeftLegPlayer,
+        "RightLegPlayer": RightLegPlayer,
+        
+        "LeftArmImp": LeftArmImp,
+        "RightArmImp": RightArmImp,
+        "TorsoImp": TorsoImp,
+        "LeftLegImp": LeftLegImp,
+        "RightLegImp": RightLegImp,
+
+        "LeftArmStrong": LeftArmStrong,
+        "RightArmStrong": RightArmStrong,
+        "TorsoStrong": TorsoStrong,
+        "LeftLegStrong": LeftLegStrong,
+        "RightLegStrong": RightLegStrong,
+        
+        "LeftArmFast": LeftArmFast,
+        "RightArmFast": RightArmFast,
+        "TorsoFast": TorsoFast,
+        "LeftLegFast": LeftLegFast,
+        "RightLegFast": RightLegFast,
+        
+        "LeftArmStealth": LeftArmStealth,
+        "RightArmStealth": RightArmStealth,
+        "TorsoStealth": TorsoStealth,
+        "LeftLegStealth": LeftLegStealth,
+        "RightLegStealth": RightLegStealth}

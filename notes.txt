@@ -1,0 +1,83 @@
+Map:
+    blank floor = 0
+    wall = 1
+    player = 2
+    Imp = 3
+    fast = 4
+    strong = 5
+    stealth = 6
+    chest = 7
+    lour = 8
+    exit = 9
+
+[1 1 1 1 1 1 1 1 1 1 1 1]
+[1 8 0 0 0 0 0 0 0 0 0 1]
+[1 1 1 0 0 0 0 0 0 0 0 1]
+[1 0 0 0 1 0 0 0 0 0 0 1]
+[1 0 0 0 1 1 1 1 0 9 0 1]
+[1 0 0 0 0 0 1 1 1 0 0 1]
+[1 0 0 1 0 0 0 0 1 1 0 1]
+[1 0 7 1 0 0 0 0 0 1 1 1]
+[1 1 1 1 1 0 0 0 0 0 1 1]
+[1 0 0 0 0 0 0 0 0 0 0 1]
+[1 0 0 0 0 2 0 0 0 0 0 1]
+[1 1 1 1 1 1 1 1 1 1 1 1]
+
+
+Lore:
+Notes:
+The air here is so heavy, it stinks of iron and death.
+i can't place my finger on it but the walls here feel like they're listening
+hopefully we can find some fuel to get out of here
+it feels like walking through an old grave yard
+
+A warning to any who find this
+leave in any capacity that you can
+this place will subject you to things worse than death
+i've forgot what humanity even means cause of this place 
+
+I don't believe it 
+this can't be real
+we thought it was a person
+but something was very wrong with them
+there was no soul
+only purpose 
+who could stomach creating such an abomination
+
+
+Scrawling:
+wyecTHEwieucbfWALLShfkbvAREiseybALIVEsrvse
+sryvbTHEYsiruvbSEEysrvYOUsrv
+
+Don't trust the overseer
+
+This isn't your skin
+
+Thief
+
+Your existence proves Nietzsche right
+
+
+Data Logs:
+Log 01 - ID Captain, Mr Xavier:
+    we have reached stable orbit, solar panels are fully deployed and all glucose replicators are operational 
+    they still won't tell us why we are here or what for.
+    I've flown hundred of mining facilities out to their dig sites, and even more researchers to the next "universe defining outpost"
+    but this feels different, the suits said it should be no different but I don't like it.
+    The researchers seem closer to cult members than anything.
+
+Log 37 - ID Medical Officer, Dr Martin:
+    It's been a month onboard the Fulcrum and it seems that no one knows what is really happening,
+    but there is a rumor that we are here on some top secret mission to help with the food shortage on titan, 
+    my question is: why have us do it at such an isolated location, 
+    another thing is that they keep getting me to look at tissue sample, 
+    i understand that lab grown meat is a possibility but that doesn't explain the adrenal glands
+    i found within the supposedly lab grown pieces.
+
+Log 17 - ID Power Grid Engineer, Miss Lamarr:
+    It makes 0 sense, why would we need so much power, this is a researchers facility for useless rocks,
+    so why am I managing enough power to light up new california republic for a year.
+    There has to be a reason, a shame that we're strictly forbids from asking about it,
+    i'm starting to understand why so many had passed up on this job.
+
+
